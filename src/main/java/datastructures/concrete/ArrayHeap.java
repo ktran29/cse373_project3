@@ -42,12 +42,14 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
-        throw new NotYetImplementedException();
+        T minValue = heap[1];
+        // shifting logic
+        return minValue;
     }
 
     @Override
     public T peekMin() {
-        throw new NotYetImplementedException();
+        return heap[1];
     }
 
     @Override
@@ -57,6 +59,12 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        int size = 0;
+        for (int i = 0; i < heap.length; i++) {
+        		if (heap[i] != null) {
+        			size++;
+        		}
+        }
+        return size;
     }
 }
