@@ -61,28 +61,6 @@ public class TestArrayHeapFunctionality extends BaseTest {
     		assertTrue(heap.isEmpty());
     }
     
-    @Test(timeout=10 * SECOND)
-    public void testInsertAndRemoveMany() {
-    		IPriorityQueue<Integer> heap = this.makeInstance();
-    		int cap = 5000;
-    		
-    		for (int i = cap; i > 0; i--) {
-    			heap.insert(i);
-    			assertEquals(i, heap.peekMin());
-    			assertEquals(cap - i, heap.size());
-    		}
-    		
-    		assertEquals(cap, heap.size());
-    		
-    		for (int i = 1; i <= cap; i++) {
-    			assertEquals(i, heap.peekMin());
-    			heap.removeMin();
-    			assertEquals(cap - i, heap.size());
-    		}
-    		
-    		assertTrue(heap.isEmpty());
-    }
-    
     @Test(timeout=SECOND)
     public void testNullEntry() {
     		IPriorityQueue<Integer> heap = this.makeInstance();
@@ -94,4 +72,18 @@ public class TestArrayHeapFunctionality extends BaseTest {
     		}
     }
     
+    @Test(timeout=SECOND)
+    public void testRemovePreservesCompleteness() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	heap.insert(1);
+    	heap.insert(2);
+    	heap.insert(3);
+    	heap.insert(4);
+    	heap.insert(5);
+    	heap.removeMin();
+    	assertEquals(heap.peekMin(), 2);
+    	assertEquals(heap.size(), 4);
+    	// Logic to check if heap is complete?
+    	// assertTrue(heap[4] == 5);
+    }
 }
