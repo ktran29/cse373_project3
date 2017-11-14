@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
+import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
 import misc.exceptions.NoSuchKeyException;
@@ -21,7 +22,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     protected <T extends Comparable<T>> IPriorityQueue<T> makeInstance() {
         return new ArrayHeap<>();
     }
-
+    
     @Test(timeout=SECOND)
     public void testBasicSize() {
         IPriorityQueue<Integer> heap = this.makeInstance();
@@ -39,7 +40,16 @@ public class TestArrayHeapFunctionality extends BaseTest {
     		assertEquals(1, heap.peekMin());
     }
     
-    @Test //(timeout=SECOND)
+    @Test(timeout=SECOND)
+    public void testAddDuplicateNodes() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	heap.insert(1);
+    	heap.insert(1);
+    	assertEquals(2, heap.size());
+    	assertEquals(1, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
     public void testBasicRemoveAndSize() {
     	IPriorityQueue<Integer> heap = this.makeInstance();
 		heap.insert(1);

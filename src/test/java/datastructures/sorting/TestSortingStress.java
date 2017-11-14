@@ -19,12 +19,12 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10 * SECOND)
     public void testHeapInsertAndRemoveMany() {
     		IPriorityQueue<Integer> heap = this.makeInstance();
-    		int cap = 5000;
+    		int cap = 100000;
     		
     		for (int i = cap; i > 0; i--) {
     			heap.insert(i);
     			assertEquals(i, heap.peekMin());
-    			assertEquals(cap - i, heap.size());
+    			assertEquals(cap - (i - 1), heap.size());
     		}
     		
     		assertEquals(cap, heap.size());
