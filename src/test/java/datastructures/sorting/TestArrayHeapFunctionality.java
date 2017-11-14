@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
 import datastructures.interfaces.IDictionary;
+import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
 import misc.exceptions.NoSuchKeyException;
@@ -41,12 +42,44 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testAddDuplicateNodes() {
+    public void testAddDuplicateNodesBasic() {
     	IPriorityQueue<Integer> heap = this.makeInstance();
     	heap.insert(1);
     	heap.insert(1);
-    	assertEquals(2, heap.size());
+    	heap.insert(4);
+    	heap.insert(4);
+    	assertEquals(4, heap.size());
     	assertEquals(1, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testAddDuplicateNodesPercolate() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	heap.insert(3);
+    	heap.insert(4);
+    	heap.insert(4);
+    	heap.insert(8);
+    	heap.insert(2);
+    	heap.insert(2);
+    	assertEquals(6, heap.size());
+    	assertEquals(2, heap.removeMin());
+    	assertEquals(2, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testAddAndRemoveOutOfOrder() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	heap.insert(6);
+    	heap.insert(4);
+    	heap.insert(3);
+    	heap.insert(2);
+    	heap.insert(1);
+    	assertEquals(5, heap.size());
+    	assertEquals(1, heap.removeMin());
+    	assertEquals(2, heap.removeMin());
+    	assertEquals(3, heap.removeMin());
+    	assertEquals(4, heap.removeMin());
+    	assertEquals(6, heap.removeMin());
     }
     
     @Test(timeout=SECOND)
@@ -81,19 +114,4 @@ public class TestArrayHeapFunctionality extends BaseTest {
     			//This is ok: do nothing
     		}
     }
-    
-    /*@Test(timeout=SECOND)
-    public void testRemovePreservesCompleteness() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	heap.insert(1);
-    	heap.insert(2);
-    	heap.insert(3);
-    	heap.insert(4);
-    	heap.insert(5);
-    	heap.removeMin();
-    	assertEquals(heap.peekMin(), 2);
-    	assertEquals(heap.size(), 4);
-    	// Logic to check if heap is complete?
-    	// assertTrue(heap[4] == 5);
-    }*/
 }
