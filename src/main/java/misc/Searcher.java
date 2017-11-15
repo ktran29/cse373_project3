@@ -1,9 +1,10 @@
 package misc;
 
+import java.util.Iterator;
+
 import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
-import misc.exceptions.NotYetImplementedException;
 
 public class Searcher {
     /**
@@ -33,28 +34,37 @@ public class Searcher {
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
 
-    		ArrayHeap<T> heap = new ArrayHeap<T>();
+        ArrayHeap<T> heap = new ArrayHeap<>();
     		
-    		IList<T> sorted = new DoubleLinkedList<T>();
+        IList<T> sorted = new DoubleLinkedList<>();
     		
-    		for (T item : input) {
-    			heap.insert(item);
-    		}
-    		
-    		if (k > input.size()) {
-    			while (!heap.isEmpty()) {
-    				sorted.add(heap.removeMin());
-    			}
-    		} else {
-    			for (int i = 0; i < heap.size() - k;) {
-        			heap.removeMin();
-        		}
-        		
-        		for (int i = 0; i < k; i++) {
-        			sorted.add(heap.removeMin());
-        		}
-    		}
-    		return sorted;
+        if (k > input.size()) {
+            for (T item : input) {
+                heap.insert(item);
+            }
+	
+            while (!heap.isEmpty()) {
+                sorted.add(heap.removeMin());
+            }
+        } else {
+            Iterator<T> iter = input.iterator();
+            for (int i = 0; i < k; i++) {
+                heap.insert(iter.next());
+            }
+
+            while (iter.hasNext()) {
+                T value = iter.next();
+                if (value.compareTo(heap.peekMin()) > 0) {
+                    heap.removeMin();
+                    heap.insert(value);
+                }
+            }
+
+            for (int i = 0; i < k; i++) {
+                sorted.add(heap.removeMin());
+            }
+        }
+        return sorted;
     }
     	
 }

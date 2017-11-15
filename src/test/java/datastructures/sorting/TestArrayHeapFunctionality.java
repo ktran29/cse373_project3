@@ -33,85 +33,85 @@ public class TestArrayHeapFunctionality extends BaseTest {
     
     @Test(timeout=SECOND)
     public void testBasicInsertAndPeek() {
-    		IPriorityQueue<Integer> heap = this.makeInstance();
-    		heap.insert(1);
-    		heap.insert(2);
-    		heap.insert(3);
-    		assertEquals(3, heap.size());
-    		assertEquals(1, heap.peekMin());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(1);
+        heap.insert(2);
+        heap.insert(3);
+        assertEquals(3, heap.size());
+        assertEquals(1, heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testAddDuplicateNodesBasic() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	heap.insert(1);
-    	heap.insert(1);
-    	heap.insert(4);
-    	heap.insert(4);
-    	assertEquals(4, heap.size());
-    	assertEquals(1, heap.peekMin());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(1);
+        heap.insert(1);
+        heap.insert(4);
+        heap.insert(4);
+        assertEquals(4, heap.size());
+        assertEquals(1, heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testAddDuplicateNodesPercolate() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	heap.insert(3);
-    	heap.insert(4);
-    	heap.insert(4);
-    	heap.insert(8);
-    	heap.insert(2);
-    	heap.insert(2);
-    	assertEquals(6, heap.size());
-    	assertEquals(2, heap.removeMin());
-    	assertEquals(2, heap.peekMin());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(3);
+        heap.insert(4);
+        heap.insert(4);
+        heap.insert(8);
+        heap.insert(2);
+        heap.insert(2);
+        assertEquals(6, heap.size());
+        assertEquals(2, heap.removeMin());
+        assertEquals(2, heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testAddAndRemoveOutOfOrder() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	heap.insert(6);
-    	heap.insert(4);
-    	heap.insert(3);
-    	heap.insert(2);
-    	heap.insert(1);
-    	assertEquals(5, heap.size());
-    	assertEquals(1, heap.removeMin());
-    	assertEquals(2, heap.removeMin());
-    	assertEquals(3, heap.removeMin());
-    	assertEquals(4, heap.removeMin());
-    	assertEquals(6, heap.removeMin());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(6);
+        heap.insert(4);
+        heap.insert(3);
+        heap.insert(2);
+        heap.insert(1);
+        assertEquals(5, heap.size());
+        assertEquals(1, heap.removeMin());
+        assertEquals(2, heap.removeMin());
+        assertEquals(3, heap.removeMin());
+        assertEquals(4, heap.removeMin());
+        assertEquals(6, heap.removeMin());
     }
     
     @Test(timeout=SECOND)
     public void testBasicRemoveAndSize() {
     	IPriorityQueue<Integer> heap = this.makeInstance();
-		heap.insert(1);
-		heap.insert(2);
-		heap.insert(3);
-		assertEquals(3, heap.size());
-		assertEquals(1, heap.removeMin());
-		assertEquals(2, heap.size());
-		assertEquals(2, heap.peekMin());
+        heap.insert(1);
+        heap.insert(2);
+        heap.insert(3);
+        assertEquals(3, heap.size());
+        assertEquals(1, heap.removeMin());
+        assertEquals(2, heap.size());
+        assertEquals(2, heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testBasicEmpty() {
-    		IPriorityQueue<Integer> heap = this.makeInstance();
-    		heap.insert(1);
-    		heap.insert(2);
-    		heap.removeMin();
-    		heap.removeMin();
-    		assertTrue(heap.isEmpty());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(1);
+        heap.insert(2);
+        heap.removeMin();
+        heap.removeMin();
+        assertTrue(heap.isEmpty());
     }
     
     @Test(timeout=SECOND)
     public void testNullEntry() {
-    		IPriorityQueue<Integer> heap = this.makeInstance();
-    		try {
-    			heap.insert(null);
-    			fail("Expected something idk");
-    		} catch (IllegalArgumentException ex) {
-    			//This is ok: do nothing
-    		}
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        try {
+            heap.insert(null);
+            fail("Expected something idk");
+        } catch (IllegalArgumentException ex) {
+        		//This is ok: do nothing
+        }
     }
 }
