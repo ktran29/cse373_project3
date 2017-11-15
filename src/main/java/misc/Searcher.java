@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
+import datastructures.interfaces.IPriorityQueue;
 import datastructures.interfaces.IList;
 
 public class Searcher {
@@ -34,7 +35,7 @@ public class Searcher {
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
 
-        ArrayHeap<T> heap = new ArrayHeap<>();
+        IPriorityQueue<T> heap = new ArrayHeap<>();
     		
         IList<T> sorted = new DoubleLinkedList<>();
     		
