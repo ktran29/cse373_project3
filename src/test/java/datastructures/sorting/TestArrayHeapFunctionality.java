@@ -96,32 +96,32 @@ public class TestArrayHeapFunctionality extends BaseTest {
     
     @Test(timeout=SECOND)
     public void testInsertNegativeValues() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	heap.insert(0);
-    	heap.insert(1);
-    	heap.insert(-1);
-    	heap.insert(2);
-    	heap.insert(-2);
-    	heap.insert(-3);
-    	assertEquals(-3, heap.peekMin());
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(0);
+        heap.insert(1);
+        heap.insert(-1);
+        heap.insert(2);
+        heap.insert(-2);
+        heap.insert(-3);
+        assertEquals(-3, heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testInsertStringValues() {
-    	IPriorityQueue<String> heap = this.makeInstance();
-    	heap.insert("b");
-    	heap.insert("a");
-    	heap.insert("apple");
-    	assertEquals("a", heap.peekMin());
+        IPriorityQueue<String> heap = this.makeInstance();
+        heap.insert("b");
+        heap.insert("a");
+        heap.insert("apple");
+        assertEquals("a", heap.peekMin());
     }
     
     @Test(timeout=SECOND)
     public void testInsertLargeValues() {
-    	IPriorityQueue<String> heap = this.makeInstance();
-    	heap.insert("ababbababababababaachhchchchchchhch");
-    	heap.insert("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-    	heap.insert("superduperlongstringitjustneverstopsever");
-    	assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", heap.peekMin());
+        IPriorityQueue<String> heap = this.makeInstance();
+        heap.insert("ababbababababababaachhchchchchchhch");
+        heap.insert("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        heap.insert("superduperlongstringitjustneverstopsever");
+        assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", heap.peekMin());
     }
     
     @Test(timeout=SECOND)
@@ -136,24 +136,24 @@ public class TestArrayHeapFunctionality extends BaseTest {
     
     @Test(timeout=SECOND)
     public void testRemoveEmptyThrowsError() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	try {
-    		heap.removeMin();
-    		fail("Can't remove from empty heap!");
-    	} catch (EmptyContainerException ex) {
-    		//This is ok: do nothing
-    	}
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        try {
+            heap.removeMin();
+            fail("Can't remove from empty heap!");
+        } catch (EmptyContainerException ex) {
+            //This is ok: do nothing
+        }
     }
     
     @Test(timeout=SECOND)
     public void testPeekEmptyThrowsError() {
-    	IPriorityQueue<Integer> heap = this.makeInstance();
-    	try {
-    		heap.peekMin();
-    		fail("Nothing in an empty heap!");
-    	} catch (EmptyContainerException ex) {
-    		//This is ok: do nothing
-    	}
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        try {
+            heap.peekMin();
+            fail("Nothing in an empty heap!");
+        } catch (EmptyContainerException ex) {
+            //This is ok: do nothing
+        }
     }
     
     @Test(timeout=SECOND)
@@ -161,7 +161,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
         IPriorityQueue<Integer> heap = this.makeInstance();
         try {
             heap.insert(null);
-            fail("Expected something idk");
+            fail("No null entries");
         } catch (IllegalArgumentException ex) {
         		//This is ok: do nothing
         }

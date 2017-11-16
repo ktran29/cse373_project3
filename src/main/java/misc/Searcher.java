@@ -35,34 +35,40 @@ public class Searcher {
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
 
+        if (k < 0) {
+            throw new IllegalArgumentException();
+        }
+    	
         IPriorityQueue<T> heap = new ArrayHeap<>();
     		
         IList<T> sorted = new DoubleLinkedList<>();
-    		
-        if (k > input.size()) {
-            for (T item : input) {
-                heap.insert(item);
-            }
-	
-            while (!heap.isEmpty()) {
-                sorted.add(heap.removeMin());
-            }
-        } else {
-            Iterator<T> iter = input.iterator();
-            for (int i = 0; i < k; i++) {
-                heap.insert(iter.next());
-            }
-
-            while (iter.hasNext()) {
-                T value = iter.next();
-                if (value.compareTo(heap.peekMin()) > 0) {
-                    heap.removeMin();
-                    heap.insert(value);
+        
+        if (k > 0) {
+            if (k > input.size()) {
+                for (T item : input) {
+                    heap.insert(item);
                 }
-            }
+    	
+                while (!heap.isEmpty()) {
+                    sorted.add(heap.removeMin());
+                }
+            } else {
+                Iterator<T> iter = input.iterator();
+                for (int i = 0; i < k; i++) {
+                    heap.insert(iter.next());
+                }
 
-            for (int i = 0; i < k; i++) {
-                sorted.add(heap.removeMin());
+                while (iter.hasNext()) {
+                    T value = iter.next();
+                    if (value.compareTo(heap.peekMin()) > 0) {
+                        heap.removeMin();
+                        heap.insert(value);
+                    }
+                }
+
+                for (int i = 0; i < k; i++) {
+                    sorted.add(heap.removeMin());
+                }
             }
         }
         return sorted;

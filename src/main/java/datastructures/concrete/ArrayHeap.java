@@ -43,9 +43,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T removeMin() {
-    	if (this.size() == 0) {
-    		throw new EmptyContainerException();
-    	}
+        if (this.size() == 0) {
+            throw new EmptyContainerException();
+        }
         T minValue = heap[0];
         heap[0] = heap[heapSize - 1];
         heap[heapSize - 1] = null;
@@ -57,96 +57,94 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 
     @Override
     public T peekMin() {
-    	if (this.size() == 0) {
-    		throw new EmptyContainerException();
-    	}
+        if (this.size() == 0) {
+            throw new EmptyContainerException();
+        }
         return heap[0];
     }
 
     @Override
     public void insert(T item) {
-    	if (item == null) {
-    		throw new IllegalArgumentException();
-    	}
-    	if (heap[heap.length - 1] != null) { // array is full
-    		T[] newHeap = makeArrayOfT(heap.length * 2);
-    		for (int i = 0; i < heap.length; i++) {
-    			newHeap[i] = heap[i];
-    		}
-    		heap = newHeap;
-    	}
+        if (item == null) {
+            throw new IllegalArgumentException();
+        }
+        if (heap[heap.length - 1] != null) { // array is full
+            T[] newHeap = makeArrayOfT(this.size() * 2);
+            for (int i = 0; i < heap.length; i++) {
+                newHeap[i] = heap[i];
+            }
+            heap = newHeap;
+        }
         for (int i = 0; i < heap.length; i++) {
-        	if (heap[i] == null) {
-        		heap[i] = item;
-        		heapSize++;
-        		swapHeapNodes(i);
-        		i = heap.length;
-        	}
+            if (heap[i] == null) {
+                heap[i] = item;
+                heapSize++;
+                swapHeapNodes(i);
+                i = heap.length;
+            }
         }     
     }
 
     @Override
     public int size() {
-    	return heapSize;
+        return heapSize;
     }
     
     private void swapHeapNodes(int nodeIndex) {
-    	int parentIndex = findParentIndex(nodeIndex);
-    	while (heap[parentIndex].compareTo(heap[nodeIndex]) > 0) { // parent > child
-    		T temp = heap[nodeIndex];
-    		heap[nodeIndex] = heap[parentIndex];
-    		heap[parentIndex] = temp;
-    		nodeIndex = parentIndex;
-    		parentIndex = findParentIndex(nodeIndex);
-    	}
+        int parentIndex = findParentIndex(nodeIndex);
+        while (heap[parentIndex].compareTo(heap[nodeIndex]) > 0) { // parent > child
+            T temp = heap[nodeIndex];
+            heap[nodeIndex] = heap[parentIndex];
+            heap[parentIndex] = temp;
+            nodeIndex = parentIndex;
+            parentIndex = findParentIndex(nodeIndex);
+        }
     }
     
     private int findParentIndex(int index) {
-    	if (index == 0) {
-    		return 0;
-    	}
-    	else {
-    		if (index % 4 == 0) {
-    			index = (index / 4) - 1;
-    		}
-    		else {
-    			index = index / 4;
-    		}
-    	}
-    	return index;
+        if (index == 0) {
+            return 0;
+        } else {
+            if (index % 4 == 0) {
+                index = (index / 4) - 1;
+            } else {
+                index = index / 4;
+            }
+        }
+        return index;
     }
     
     // Swap child node with parent node if node of parentIndex is larger than child node.
     // numChildren represents how many children are possibly available. 
     private void swapPercolateDown(int parentIndex, int numChildren) {
-    	int childIndex = (4*parentIndex + 1);
-    	if (heap[childIndex] != null) {
-        	T smallestChild = heap[childIndex];
+        int childIndex = (4*parentIndex + 1);
+        if (heap[childIndex] != null) {
+            T smallestChild = heap[childIndex];
             for (int i = 2; i <= numChildren; i++) {
-            	int currentIndex = 4*parentIndex + i;
-            	if (heap[currentIndex] != null) {
-            		T nextChild = heap[currentIndex];
-                	if (smallestChild.compareTo(nextChild) > 0) {
-                		smallestChild = nextChild;
-                		childIndex = currentIndex;
-                	}
-            	}
+                int currentIndex = 4*parentIndex + i;
+                if (heap[currentIndex] != null) {
+                    T nextChild = heap[currentIndex];
+                    if (smallestChild.compareTo(nextChild) > 0) {
+                        smallestChild = nextChild;
+                        childIndex = currentIndex;
+                    }
+                }
             }
             if (heap[parentIndex].compareTo(smallestChild) > 0) {
-            	T temp = heap[parentIndex];
-            	heap[parentIndex] = smallestChild;
-            	heap[childIndex] = temp;
-            	int newIndex = (4*childIndex + 1);
-            	if (newIndex < heap.length - 4) {
-            		swapPercolateDown(childIndex, 4);
-            	} else if (newIndex < heap.length - 3) {
-            		swapPercolateDown(childIndex, 3);
-            	} else if (newIndex < heap.length - 2) {
-            		swapPercolateDown(childIndex, 2);
-            	} else if (newIndex < heap.length - 1) {
-            		swapPercolateDown(childIndex, 1);
-            	}
+                T temp = heap[parentIndex];
+                heap[parentIndex] = smallestChild;
+                heap[childIndex] = temp;
+                int newIndex = (4*childIndex + 1);
+                if (newIndex < heap.length - 4) {
+                    swapPercolateDown(childIndex, 4);
+                } else if (newIndex < heap.length - 3) {
+                    swapPercolateDown(childIndex, 3);
+                } else if (newIndex < heap.length - 2) {
+                    swapPercolateDown(childIndex, 2);
+                } else if (newIndex < heap.length - 1) {
+                    swapPercolateDown(childIndex, 1);
+                }
             }
-    	}
+        }
     }
 }

@@ -93,4 +93,81 @@ public class TestSortingStress extends BaseTest {
             assertEquals(5 + i, top.get(i));
         }
     }
+    
+    @Test(timeout=SECOND)
+    public void testSmallKManyEntries() {
+        int cap = 500000;
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        for (int i = 0; i < cap; i++) {
+            list.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(5, list);
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(499995 + i, top.get(i));
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testStringSmallKManyEntries() {
+        int cap = 500000;
+        IList<String> list = new DoubleLinkedList<>();
+        
+        for (int i = 0; i < cap; i++) {
+            list.add("a" + i);
+        }
+        
+        IList<String> top = Searcher.topKSort(5, list);
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals("a" + (99995 + i), top.get(i));
+        }
+    }
+    
+    @Test(timeout=10 * SECOND)
+    public void testMediumKManyEntries() {
+        int cap = 100000;
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        for (int i = 0; i < cap; i++) {
+            list.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(cap/2, list);
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(cap/2 + i, top.get(i));
+        }
+    }
+    
+    @Test(timeout=15 * SECOND)
+    public void testManyIdenticalEntries() {
+        int cap = 200000;
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        for (int i = 0; i < cap; i++) {
+            list.add(1);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(cap/2, list);
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(1, top.get(i));
+        }
+    }
+    
+    @Test(timeout=15 * SECOND)
+    public void testStressKGreaterThanSize() {
+        int cap = 100000;
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < cap; i++) {
+            list.add(i);
+        }
+    		
+        IList<Integer> top = Searcher.topKSort(cap + 1, list);
+        assertEquals(cap, top.size());
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(i, top.get(i));
+        }
+    }
+    
+    
 }
