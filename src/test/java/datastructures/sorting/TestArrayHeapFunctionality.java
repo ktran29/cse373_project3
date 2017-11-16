@@ -105,6 +105,28 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
+    public void testRemoveEmptyThrowsError() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	try {
+    		heap.removeMin();
+    		fail("Can't remove from empty heap!");
+    	} catch (EmptyContainerException ex) {
+    		//This is ok: do nothing
+    	}
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeekEmptyThrowsError() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	try {
+    		heap.peekMin();
+    		fail("Nothing in an empty heap!");
+    	} catch (EmptyContainerException ex) {
+    		//This is ok: do nothing
+    	}
+    }
+    
+    @Test(timeout=SECOND)
     public void testNullEntry() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         try {

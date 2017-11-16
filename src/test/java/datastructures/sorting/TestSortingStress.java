@@ -23,7 +23,7 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10 * SECOND)
     public void testHeapInsertAndRemoveMany() {
     	IPriorityQueue<Integer> heap = this.makeInstance();
-        int cap = 100000;
+        int cap = 120000;
 		
         for (int i = 1; i <= cap; i++) {
             heap.insert(i);
@@ -45,7 +45,7 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10 * SECOND)
     public void testHeapInsertAndRemoveOutOfOrderMany() {
         IPriorityQueue<Integer> heap = this.makeInstance();
-        int cap = 100000;
+        int cap = 120000;
     		
         for (int i = cap; i > 0; i--) {
             heap.insert(i);

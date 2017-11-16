@@ -69,7 +69,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     		throw new IllegalArgumentException();
     	}
     	if (heap[heap.length - 1] != null) { // array is full
-    		T[] newHeap = makeArrayOfT(this.size() * 2);
+    		T[] newHeap = makeArrayOfT(heap.length * 2);
     		for (int i = 0; i < heap.length; i++) {
     			newHeap[i] = heap[i];
     		}
