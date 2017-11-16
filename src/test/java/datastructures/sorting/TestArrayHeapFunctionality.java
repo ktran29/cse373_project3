@@ -95,6 +95,36 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
+    public void testInsertNegativeValues() {
+    	IPriorityQueue<Integer> heap = this.makeInstance();
+    	heap.insert(0);
+    	heap.insert(1);
+    	heap.insert(-1);
+    	heap.insert(2);
+    	heap.insert(-2);
+    	heap.insert(-3);
+    	assertEquals(-3, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertStringValues() {
+    	IPriorityQueue<String> heap = this.makeInstance();
+    	heap.insert("b");
+    	heap.insert("a");
+    	heap.insert("apple");
+    	assertEquals("a", heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertLargeValues() {
+    	IPriorityQueue<String> heap = this.makeInstance();
+    	heap.insert("ababbababababababaachhchchchchchhch");
+    	heap.insert("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    	heap.insert("superduperlongstringitjustneverstopsever");
+    	assertEquals("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
     public void testBasicEmpty() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         heap.insert(1);

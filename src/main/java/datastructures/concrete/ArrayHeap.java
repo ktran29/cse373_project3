@@ -124,7 +124,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         	T smallestChild = heap[childIndex];
             for (int i = 2; i <= numChildren; i++) {
             	int currentIndex = 4*parentIndex + i;
-            	if (heap[currentIndex] != null ) {
+            	if (heap[currentIndex] != null) {
             		T nextChild = heap[currentIndex];
                 	if (smallestChild.compareTo(nextChild) > 0) {
                 		smallestChild = nextChild;
