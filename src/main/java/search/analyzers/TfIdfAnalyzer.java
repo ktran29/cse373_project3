@@ -96,6 +96,6 @@ public class TfIdfAnalyzer {
         //    Add a third field containing that information.
         //
         // 2. See if you can combine or merge one or more loops.
-        return 0.0;
+        return 1.0;
     }
 }
