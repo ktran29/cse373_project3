@@ -1,5 +1,7 @@
 package search.analyzers;
 
+import datastructures.concrete.KVPair;
+import datastructures.concrete.dictionaries.ArrayDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
@@ -7,6 +9,7 @@ import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
+import java.lang.Math;
 
 /**
  * This class is responsible for computing how "relevant" any given document is
@@ -35,8 +38,8 @@ public class TfIdfAnalyzer {
         // You should uncomment these lines when you're ready to begin working
         // on this class.
 
-        //this.idfScores = this.computeIdfScores(webpages);
-        //this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.idfScores = this.computeIdfScores(webpages);
+        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -57,7 +60,34 @@ public class TfIdfAnalyzer {
      * in any documents to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        throw new NotYetImplementedException();
+        // throw new NotYetImplementedException();
+    	IDictionary<String, Double> dict = new ArrayDictionary<>();
+    	int totalPages = 0;
+    	
+    	// Create initial Dictionary
+    	for (Webpage page : pages) {
+    		totalPages++;
+    		IDictionary<String, Double> temp = new ArrayDictionary<>();
+    		for (String term : page.getWords()) {
+    			temp.put(term, 1.0);
+    		}
+    		// add instance of word in doc to dictionary
+    		for (KVPair<String, Double> pair : temp) {
+    			String word = pair.getKey();
+    			if (dict.containsKey(word)) {
+    				dict.put(word, dict.get(word) + 1);
+    			} else {
+    				dict.put(word,  1.0);
+    			}
+    			
+    		}
+    	}
+    	// Calculate IDF
+    	for (KVPair<String, Double> pair : dict) {
+    		String word = pair.getKey();
+    		dict.put(word, Math.log((totalPages / dict.get(word))));
+    	}
+    	return dict;
     }
 
     /**
@@ -67,7 +97,25 @@ public class TfIdfAnalyzer {
      * We are treating the list of words as if it were a document.
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
-        throw new NotYetImplementedException();
+    	IDictionary<String, Double> dict = new ArrayDictionary<>();
+    	int totalWords = 0;
+    	
+    	// Collect total number of words & words of each type in doc
+    	for (String word : words) {
+    		totalWords++;
+    		if (dict.containsKey(word)) {
+    			dict.put(word, (dict.get(word) + 1));
+    		} else {
+    			dict.put(word, 1.0);
+    		}
+    	}
+    	
+    	// Calculate number tf for each word
+    	for (KVPair<String, Double> pair : dict) {
+    		String word = pair.getKey();
+    		dict.put(word, (dict.get(word) / totalWords));
+    	}
+    	return dict;
     }
 
     /**
@@ -76,7 +124,18 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
-        throw new NotYetImplementedException();
+    	
+    	// Create entire dictionary
+    	IDictionary<URI, IDictionary<String, Double>> tfIdfVectors = new ArrayDictionary<>();
+    	for (Webpage page : pages) {
+    		IDictionary<String, Double> tfScores = computeTfScores(page.getWords());
+    		for (KVPair<String, Double> pair : tfScores) {
+    			String word = pair.getKey();
+    			tfScores.put(word, (tfScores.get(word) * idfScores.get(word)));
+    		}
+    		tfIdfVectors.put(page.getUri(), tfScores);
+    	}
+    	return tfIdfVectors;
     }
 
     /**
@@ -90,7 +149,7 @@ public class TfIdfAnalyzer {
         // TODO: Replace this with actual, working code.
 
         // TODO: The pseudocode we gave you is not very efficient. When implementing,
-        // this smethod, you should:
+        // this method, you should:
         //
         // 1. Figure out what information can be precomputed in your constructor.
         //    Add a third field containing that information.
