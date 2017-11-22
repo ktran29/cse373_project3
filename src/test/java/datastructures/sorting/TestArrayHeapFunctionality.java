@@ -14,8 +14,6 @@ import misc.exceptions.NoSuchKeyException;
 
 import org.junit.Test;
 
-import java.util.*;
-
 /**
  * See spec for details on what kinds of tests this class should include.
  */
