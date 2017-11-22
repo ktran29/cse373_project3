@@ -2,6 +2,7 @@ package search.analyzers;
 
 import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ArrayDictionary;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
@@ -38,7 +39,7 @@ public class TfIdfAnalyzer {
         // on this class.
 
         this.idfScores = this.computeIdfScores(webpages);
-        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        // this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -59,13 +60,13 @@ public class TfIdfAnalyzer {
      * in any documents to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        IDictionary<String, Double> dict = new ArrayDictionary<>();
+        IDictionary<String, Double> dict = new ChainedHashDictionary<>();
         int totalPages = 0;
         
         // Create initial Dictionary
         for (Webpage page : pages) {
             totalPages++;
-            IDictionary<String, Double> temp = new ArrayDictionary<>();
+            IDictionary<String, Double> temp = new ChainedHashDictionary<>();
             for (String term : page.getWords()) {
                 temp.put(term, 1.0);
             }
@@ -95,7 +96,7 @@ public class TfIdfAnalyzer {
      * We are treating the list of words as if it were a document.
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
-        IDictionary<String, Double> dict = new ArrayDictionary<>();
+        IDictionary<String, Double> dict = new ChainedHashDictionary<>();
         int totalWords = 0;
     	
         // Collect total number of words & words of each type in doc
@@ -124,7 +125,7 @@ public class TfIdfAnalyzer {
         // call the computeTfScores(...) method.
     	
         // Create entire dictionary
-        IDictionary<URI, IDictionary<String, Double>> tfIdfVectors = new ArrayDictionary<>();
+        IDictionary<URI, IDictionary<String, Double>> tfIdfVectors = new ChainedHashDictionary<>();
         for (Webpage page : pages) {
             IDictionary<String, Double> tfScores = computeTfScores(page.getWords());
             for (KVPair<String, Double> pair : tfScores) {
