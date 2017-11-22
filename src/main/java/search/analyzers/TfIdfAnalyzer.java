@@ -2,6 +2,7 @@ package search.analyzers;
 
 import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ArrayDictionary;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
@@ -60,7 +61,7 @@ public class TfIdfAnalyzer {
      * in any documents to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        // throw new NotYetImplementedException();
+    	long startTime = System.currentTimeMillis();
     	IDictionary<String, Double> dict = new ArrayDictionary<>();
     	int totalPages = 0;
     	
@@ -82,11 +83,17 @@ public class TfIdfAnalyzer {
     			
     		}
     	}
+    	long completedTime = System.currentTimeMillis() - startTime;
+    	long checkPoint = System.currentTimeMillis();
+    	System.out.println("Initial Page Count in " + completedTime);
     	// Calculate IDF
     	for (KVPair<String, Double> pair : dict) {
     		String word = pair.getKey();
     		dict.put(word, Math.log((totalPages / dict.get(word))));
     	}
+    	completedTime = System.currentTimeMillis() - checkPoint;
+    	checkPoint = System.currentTimeMillis();
+    	System.out.println("IDF scoring completed in " + completedTime);
     	return dict;
     }
 
@@ -97,6 +104,7 @@ public class TfIdfAnalyzer {
      * We are treating the list of words as if it were a document.
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
+    	long startTime = System.currentTimeMillis();
     	IDictionary<String, Double> dict = new ArrayDictionary<>();
     	int totalWords = 0;
     	
@@ -112,9 +120,10 @@ public class TfIdfAnalyzer {
     	
     	// Calculate number tf for each word
     	for (KVPair<String, Double> pair : dict) {
-    		String word = pair.getKey();
-    		dict.put(word, (dict.get(word) / totalWords));
+    		dict.put(pair.getKey(), (pair.getValue() / totalWords));
     	}
+    	long currentTime = System.currentTimeMillis() - startTime;
+    	System.out.println("tf page done in " + currentTime);
     	return dict;
     }
 
@@ -124,6 +133,7 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
+    	long startTime = System.currentTimeMillis();
     	
     	// Create entire dictionary
     	IDictionary<URI, IDictionary<String, Double>> tfIdfVectors = new ArrayDictionary<>();
@@ -131,10 +141,13 @@ public class TfIdfAnalyzer {
     		IDictionary<String, Double> tfScores = computeTfScores(page.getWords());
     		for (KVPair<String, Double> pair : tfScores) {
     			String word = pair.getKey();
-    			tfScores.put(word, (tfScores.get(word) * idfScores.get(word)));
+    			tfScores.put(word, (pair.getValue() * idfScores.get(word)));
     		}
     		tfIdfVectors.put(page.getUri(), tfScores);
     	}
+    	long completedTime = System.currentTimeMillis() - startTime;
+    	long checkPoint = System.currentTimeMillis();
+    	System.out.println("tfIDF method completed in " + completedTime);
     	return tfIdfVectors;
     }
 
