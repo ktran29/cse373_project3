@@ -74,15 +74,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                 newHeap[i] = heap[i];
             }
             heap = newHeap;
-        }
-        /*for (int i = 0; i < heap.length; i++) {
-            if (heap[i] == null) {
-                heap[i] = item;
-                heapSize++;
-                swapHeapNodes(i);
-                i = heap.length;
-            }
-        } */ 
+        } 
         heap[heapSize] = item;
         swapHeapNodes(heapSize);
         heapSize++;
