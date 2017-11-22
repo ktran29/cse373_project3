@@ -103,7 +103,7 @@ public class SearchEngine {
     private ISet<Webpage> collectWebpages(Path root) {
         try {
             return Files.walk(root)
-                    .filter(Files::isRegularFile)
+                    .filter(Files::isReadable)
                     .filter(path -> path.toString().endsWith(".htm") || path.toString().endsWith(".html"))
                     .map(Path::toUri)
                     .map(Webpage::load)
