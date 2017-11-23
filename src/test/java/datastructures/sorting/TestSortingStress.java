@@ -1,3 +1,9 @@
+/**
+ * CSE 373
+ * Project 3
+ * Kevin Tran and Marcus Deichman
+ */
+
 package datastructures.sorting;
 
 import misc.BaseTest;

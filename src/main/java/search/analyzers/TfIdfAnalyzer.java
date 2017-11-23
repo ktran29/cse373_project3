@@ -1,7 +1,12 @@
+/**
+ * CSE 373
+ * Project 3
+ * Kevin Tran and Marcus Deichman
+ */
+
 package search.analyzers;
 
 import datastructures.concrete.KVPair;
-//import datastructures.concrete.dictionaries.ArrayDictionary;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
@@ -61,26 +66,19 @@ public class TfIdfAnalyzer {
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
         IDictionary<String, Double> dict = new ChainedHashDictionary<>();
-        int totalPages = 0;
-        
+        int totalPages = pages.size();
         // Create initial Dictionary
         for (Webpage page : pages) {
-            totalPages++;
-            IDictionary<String, Double> temp = new ChainedHashDictionary<>();
+            boolean newPage = true;
             for (String term : page.getWords()) {
                 if (term != null) {
-                    temp.put(term, 1.0);
+                    if (dict.containsKey(term) && newPage) {
+                        dict.put(term, dict.get(term) + 1.0);
+                        newPage = false;
+                    } else if (!dict.containsKey(term)){
+                        dict.put(term, 1.0);
+                    }
                 }
-            }
-            // add instance of word in doc to dictionary
-            for (KVPair<String, Double> pair : temp) {
-                String word = pair.getKey();
-                if (dict.containsKey(word)) {
-                    dict.put(word, dict.get(word) + 1);
-                } else {
-                    dict.put(word,  1.0);
-                }
-    			
             }
         }
         // Calculate IDF
@@ -99,13 +97,12 @@ public class TfIdfAnalyzer {
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
         IDictionary<String, Double> dict = new ChainedHashDictionary<>();
-        int totalWords = 0;
+        int totalWords = words.size();
     	
         // Collect total number of words & words of each type in doc
         for (String word : words) {
-            totalWords++;
             if (dict.containsKey(word)) {
-                dict.put(word, (dict.get(word) + 1));
+                dict.put(word, (dict.get(word) + 1.0));
             } else {
                 dict.put(word, 1.0);
             }
@@ -147,27 +144,28 @@ public class TfIdfAnalyzer {
      *               webpages given to the constructor.
      */
     public Double computeRelevance(IList<String> query, URI pageUri) {
-        if (documentTfIdfVectors.containsKey(pageUri)) {
+        if (getDocumentTfIdfVectors().containsKey(pageUri)) {
             IDictionary<String, Double> documentVector = documentTfIdfVectors.get(pageUri);
-            IDictionary<String, Double> queryVector = computeQueryTdIdf(query);
+            IDictionary<String, Double> queryVector = computeQueryTdIdf(query);            
             double numerator = 0.0;
-            
+
             for (KVPair<String, Double> word : queryVector) {
-                double docWordScore = 0.0;
-                if (documentVector.containsKey(word.getKey())) {
-                    docWordScore += documentVector.get(word.getKey());
+            		String key = word.getKey();
+
+                if (idfScores.containsKey(key)) {
+                    double docWordScore = 0.0;
+                    if (documentVector.containsKey(key)) {
+                        docWordScore += documentVector.get(key);
+                    }
+                    double queryWordScore = queryVector.get(key);
+                    numerator += docWordScore * queryWordScore;
                 }
-                double queryWordScore = queryVector.get(word.getKey());
-                numerator += docWordScore * queryWordScore;
-                
             }
             
             double denominator = norm(documentVector) * norm(queryVector);
-            
             if (denominator != 0.0) {
                 return numerator / denominator;
             }
-            
             return 0.0;
         }
         
@@ -176,10 +174,9 @@ public class TfIdfAnalyzer {
     
     private IDictionary<String, Double> computeQueryTdIdf(IList<String> query) {
         IDictionary<String, Double> dict = new ChainedHashDictionary<>();
-        int totalWords = 0;
+        int totalWords = query.size();
     	
         for (String word : query) {
-            totalWords++;
             if (dict.containsKey(word)) {
                 dict.put(word, (dict.get(word) + 1));
             } else {
@@ -187,10 +184,13 @@ public class TfIdfAnalyzer {
             }
         }
     	
-        // Calculate number tf for each word
         for (KVPair<String, Double> pair : dict) {
             String word = pair.getKey();
-            dict.put(word, (dict.get(word) / totalWords) * idfScores.get(word));
+            if (idfScores.containsKey(word)) {
+                dict.put(word, (dict.get(word) / totalWords) * idfScores.get(word));
+            } else {
+                dict.put(word, 0.0);
+            }
         }
         return dict;
     	

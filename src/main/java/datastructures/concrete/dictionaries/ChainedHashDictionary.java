@@ -52,34 +52,34 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
 
     @Override
     public void put(K key, V value) {
-        if (key != null) {
-            int index = Math.abs(key.hashCode()) % updatingSize;
-            if (full) {
-                updatingSize *= 2;
-                IDictionary<K, V>[] newChains = makeArrayOfChains(updatingSize);
-                for (IDictionary<K, V> item : chains) {
-                    if (item != null) {
-                        Iterator<KVPair<K, V>> iter = item.iterator();
-                        while (iter.hasNext()) {
-                            KVPair<K, V> newItem = iter.next();
-                            K newKey = newItem.getKey();
-                            V newVal = newItem.getValue();
-                            if (newKey != null) {
-                                int newIndex = Math.abs(newKey.hashCode()) % updatingSize;
-                                if (newChains[newIndex] == null) {
-                                    newChains[newIndex] = new ArrayDictionary<K, V>();
-                                }
-                                newChains[newIndex].put(newKey, newVal);
-                            } else {
-                                newChains[updatingSize - 1].put(newKey, newVal);
+    		if (full) {
+            updatingSize *= 2;
+            IDictionary<K, V>[] newChains = makeArrayOfChains(updatingSize);
+            for (IDictionary<K, V> item : chains) {
+                if (item != null) {
+                    Iterator<KVPair<K, V>> iter = item.iterator();
+                    while (iter.hasNext()) {
+                        KVPair<K, V> newItem = iter.next();
+                        K newKey = newItem.getKey();
+                        V newVal = newItem.getValue();
+                        if (newKey != null) {
+                            int newIndex = Math.abs(newKey.hashCode()) % updatingSize;
+                            if (newChains[newIndex] == null) {
+                                newChains[newIndex] = new ArrayDictionary<K, V>();
                             }
+                            newChains[newIndex].put(newKey, newVal);
+                        } else {
+                            newChains[updatingSize - 1].put(newKey, newVal);
                         }
                     }
                 }
-                this.chains = newChains;
-                full = false;
-                index = Math.abs(key.hashCode()) % updatingSize;
             }
+            this.chains = newChains;
+            full = false;
+    		}
+    		
+        if (key != null) {
+            int index = Math.abs(key.hashCode()) % updatingSize;
 
             if (chains[index] == null) {
                 chains[index] = new ArrayDictionary<K, V>();
@@ -109,9 +109,11 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         } else if (containsKey(key)) {
             int index = Math.abs(key.hashCode()) % updatingSize;
             V value = chains[index].get(key);
-            int hashSize = chains[index].size();
-            chains[index] = null;
-            actualSize -= hashSize;
+            chains[index].remove(key);
+            if (chains[index].size() == 0) {
+                chains[index] = null;
+            }
+            actualSize--;
             return value;
         }
         throw new NoSuchKeyException();
@@ -181,10 +183,12 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
     private static class ChainedIterator<K, V> implements Iterator<KVPair<K, V>> {
         private IDictionary<K, V>[] chains;
         private int index;
+        private int chainIndex;
         
         public ChainedIterator(final IDictionary<K, V>[] chains) {
             this.chains = chains;
             this.index = 0;
+            this.chainIndex = 0;
         }
 
         @Override
@@ -207,7 +211,17 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
             } else {
                 Iterator<KVPair<K, V>> iter = chains[index].iterator();
                 KVPair<K, V> returnValue = iter.next();
-                index++;
+                int count = 0;
+                while (iter.hasNext() && count < chainIndex) {
+                    returnValue = iter.next();
+                    count++;
+                }
+                if (!iter.hasNext()) {
+                    index++;	
+                    chainIndex = 0;
+                } else {
+                    chainIndex++;
+                }
                 return returnValue;
             }
         }

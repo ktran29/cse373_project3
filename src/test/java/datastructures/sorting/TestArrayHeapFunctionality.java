@@ -1,16 +1,22 @@
+/**
+ * CSE 373
+ * Project 3
+ * Kevin Tran and Marcus Deichman
+ */
+
 package datastructures.sorting;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import misc.BaseTest;
 import datastructures.concrete.ArrayHeap;
-import datastructures.interfaces.IDictionary;
-import datastructures.interfaces.IList;
+//import datastructures.interfaces.IDictionary;
+//import datastructures.interfaces.IList;
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
-import misc.exceptions.NoSuchKeyException;
+//import misc.exceptions.NoSuchKeyException;
 
 import org.junit.Test;
 
@@ -42,12 +48,12 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testAddDuplicateNodesBasic() {
         IPriorityQueue<Integer> heap = this.makeInstance();
-        heap.insert(1);
-        heap.insert(1);
-        heap.insert(4);
-        heap.insert(4);
-        assertEquals(4, heap.size());
-        assertEquals(1, heap.peekMin());
+        for (int i = 0; i < 1000000; i++) {
+        	    heap.insert(1);
+        }
+        heap.insert(0);
+        assertEquals(1000001, heap.size());
+        assertEquals(0, heap.peekMin());
     }
     
     @Test(timeout=SECOND)

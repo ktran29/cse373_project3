@@ -113,9 +113,9 @@ public class SearchEngine {
         }
     }
 
-    private ISet<WebpageSummary> extractWebpageSummaries(ISet<Webpage> pages) {
+    private ISet<WebpageSummary> extractWebpageSummaries(ISet<Webpage> webPages) {
         ISet<WebpageSummary> output = new ChainedHashSet<>();
-        for (Webpage page : pages) {
+        for (Webpage page : webPages) {
             output.add(page.getSummary());
         }
         return output;

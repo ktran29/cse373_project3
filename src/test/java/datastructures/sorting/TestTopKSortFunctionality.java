@@ -1,7 +1,13 @@
+/**
+ * CSE 373
+ * Project 3
+ * Kevin Tran and Marcus Deichman
+ */
+
 package datastructures.sorting;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import misc.BaseTest;

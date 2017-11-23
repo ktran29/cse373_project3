@@ -1,10 +1,15 @@
+/**
+ * CSE 373
+ * Project 3
+ * Kevin Tran and Marcus Deichman
+ */
+
 package datastructures.concrete;
 
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
-import misc.exceptions.NotYetImplementedException;
+//import misc.exceptions.NotYetImplementedException;
 
-import java.util.Arrays;
 
 /**
  * See IPriorityQueue for details on what each method must do.
@@ -19,10 +24,12 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     private T[] heap;
     // Feel free to add more fields and constants.
     private int heapSize;
+    private int actualSize;
     
     public ArrayHeap() {
-        heap = makeArrayOfT(5);
-        heapSize = 0;
+        this.heapSize = 5;
+        this.actualSize = 0;
+        this.heap = makeArrayOfT(heapSize);
     }
 
     /**
@@ -47,9 +54,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             throw new EmptyContainerException();
         }
         T minValue = heap[0];
-        heap[0] = heap[heapSize - 1];
-        heap[heapSize - 1] = null;
-        heapSize--;
+        heap[0] = heap[actualSize - 1];
+        heap[actualSize - 1] = null;
+        actualSize--;
         int parentIndex = 0;
         swapPercolateDown(parentIndex, NUM_CHILDREN);
         return minValue;
@@ -68,21 +75,22 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         if (item == null) {
             throw new IllegalArgumentException();
         }
-        if (heap[heap.length - 1] != null) { // array is full
-            T[] newHeap = makeArrayOfT(heap.length * 2);
+        if (actualSize == heapSize) { // array is full
+        		heapSize *= 2;
+            T[] newHeap = makeArrayOfT(heapSize);
             for (int i = 0; i < heap.length; i++) {
                 newHeap[i] = heap[i];
             }
             heap = newHeap;
         } 
-        heap[heapSize] = item;
-        swapHeapNodes(heapSize);
-        heapSize++;
+        heap[actualSize] = item;
+        swapHeapNodes(actualSize);
+        actualSize++;
     }
 
     @Override
     public int size() {
-        return heapSize;
+        return actualSize;
     }
     
     private void swapHeapNodes(int nodeIndex) {
@@ -130,14 +138,11 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                 heap[parentIndex] = smallestChild;
                 heap[childIndex] = temp;
                 int newIndex = (4*childIndex + 1);
-                if (newIndex < heap.length - 4) {
-                    swapPercolateDown(childIndex, 4);
-                } else if (newIndex < heap.length - 3) {
-                    swapPercolateDown(childIndex, 3);
-                } else if (newIndex < heap.length - 2) {
-                    swapPercolateDown(childIndex, 2);
-                } else if (newIndex < heap.length - 1) {
-                    swapPercolateDown(childIndex, 1);
+                for (int i = 4; i > 0; i--) {
+                    if (newIndex < heap.length - i) {
+                        swapPercolateDown(childIndex, i);
+                        break;
+                    }
                 }
             }
         }
