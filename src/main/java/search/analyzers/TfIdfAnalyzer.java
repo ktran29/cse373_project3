@@ -1,7 +1,7 @@
 package search.analyzers;
 
 import datastructures.concrete.KVPair;
-import datastructures.concrete.dictionaries.ArrayDictionary;
+//import datastructures.concrete.dictionaries.ArrayDictionary;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
@@ -39,7 +39,7 @@ public class TfIdfAnalyzer {
         // on this class.
 
         this.idfScores = this.computeIdfScores(webpages);
-        // this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -68,7 +68,9 @@ public class TfIdfAnalyzer {
             totalPages++;
             IDictionary<String, Double> temp = new ChainedHashDictionary<>();
             for (String term : page.getWords()) {
-                temp.put(term, 1.0);
+                if (term != null) {
+                    temp.put(term, 1.0);
+                }
             }
             // add instance of word in doc to dictionary
             for (KVPair<String, Double> pair : temp) {
@@ -173,7 +175,7 @@ public class TfIdfAnalyzer {
     }
     
     private IDictionary<String, Double> computeQueryTdIdf(IList<String> query) {
-        IDictionary<String, Double> dict = new ArrayDictionary<>();
+        IDictionary<String, Double> dict = new ChainedHashDictionary<>();
         int totalWords = 0;
     	
         for (String word : query) {

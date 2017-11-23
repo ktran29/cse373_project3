@@ -78,17 +78,17 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                 }
                 this.chains = newChains;
                 full = false;
+                index = Math.abs(key.hashCode()) % updatingSize;
             }
-            if (containsKey(key)) {
-                chains[index].put(key, value);
-            } else {
-                if (chains[index] == null) {
-                    chains[index] = new ArrayDictionary<K, V>();
-                }
-                chains[index].put(key, value);
+
+            if (chains[index] == null) {
+                chains[index] = new ArrayDictionary<K, V>();
+            }
+            if (!containsKey(key)) {
                 actualSize++;
                 full = actualSize == updatingSize - 1;
             }
+            chains[index].put(key, value);
         } else {
             if (chains[updatingSize - 1] == null) {
                 chains[updatingSize - 1] = new ArrayDictionary<K, V>();
