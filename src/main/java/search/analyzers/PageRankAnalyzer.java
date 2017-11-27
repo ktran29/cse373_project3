@@ -127,8 +127,10 @@ public class PageRankAnalyzer {
         		    if (!linkedPages.isEmpty()) {
         		    		updateValue = decay * vectorValue / linkedPages.size();
         		    		for (URI linkedPage : linkedPages) {
-        		    			double linkedValue = updatingRanks.get(linkedPage);
-        		    			updatingRanks.put(linkedPage, linkedValue + updateValue);
+        		    			if (updatingRanks.containsKey(linkedPage)) {
+        		    				double linkedValue = updatingRanks.get(linkedPage);
+            		    			updatingRanks.put(linkedPage, linkedValue + updateValue);
+        		    			}
         		    		}
         		    } else {
         		    		updateValue = decay * vectorValue / graph.size();
