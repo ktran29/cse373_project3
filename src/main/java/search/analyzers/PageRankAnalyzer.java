@@ -132,12 +132,12 @@ public class PageRankAnalyzer {
         			}
         			
         			updatedRanks.put(uri, newVectorRank);
-        		}
-        		
-        		for (KVPair<URI, Double> page : updatedRanks) {
-        			URI key = page.getKey();
-        			double value = page.getValue();
-        			updatedRanks.put(key, value + ((1 - decay) / graph.size()));
+        			
+        			for (KVPair<URI, Double> updatedPage : updatedRanks) {
+            			URI key = updatedPage.getKey();
+            			double value = updatedPage.getValue();
+            			updatedRanks.put(key, value + ((1 - decay) / graph.size()));
+            		}
         		}
         		
             // Step 2: The update step should go here
