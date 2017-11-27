@@ -1,11 +1,16 @@
 package search.analyzers;
 
+import datastructures.concrete.ChainedHashSet;
+import datastructures.concrete.KVPair;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
+import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
 import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
+import java.security.InvalidParameterException;
 
 /**
  * This class is responsible for computing the 'page rank' of all available webpages.
@@ -36,13 +41,14 @@ public class PageRankAnalyzer {
         // on this class.
 
         // Step 1: Make a graph representing the 'internet'
-        //IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
+        IDictionary<URI, ISet<URI>> graph = this.makeGraph(webpages);
 
         // Step 2: Use this graph to compute the page rank for each webpage
-        //this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
+        this.pageRanks = this.makePageRanks(graph, decay, limit, epsilon);
 
         // Note: we don't store the graph as a field: once we've computed the
         // page ranks, we no longer need it!
+    	
     }
 
     /**
@@ -57,7 +63,21 @@ public class PageRankAnalyzer {
      * entirely "self-contained".
      */
     private IDictionary<URI, ISet<URI>> makeGraph(ISet<Webpage> webpages) {
-        throw new NotYetImplementedException();
+    		IDictionary<URI, ISet<URI>> graph = new ChainedHashDictionary<>();
+    		
+    		for (Webpage page : webpages) {
+    			URI uri = page.getUri();
+    			graph.put(uri, new ChainedHashSet<>());
+    			IList<URI> links = page.getLinks();
+    			for (URI link : links) {
+    				if (webpages.contains(new Webpage(uri, links, null, null, null)) && !uri.equals(link)) {
+    					graph.get(uri).add(link);
+    				}
+    			}
+    		}
+    		
+    		return graph;
+        
     }
 
     /**
@@ -76,15 +96,74 @@ public class PageRankAnalyzer {
                                                    double decay,
                                                    int limit,
                                                    double epsilon) {
+    	
+    	
+    		IDictionary<URI, Double> newRanks = new ChainedHashDictionary<>();
+    		
         // Step 1: The initialize step should go here
-
+        for (KVPair<URI, ISet<URI>> uri : graph) {
+    			newRanks.put(uri.getKey(), (double) 1 / graph.size());
+    		}
+        
         for (int i = 0; i < limit; i++) {
+        	
+            IDictionary<URI, Double> updatedRanks = new ChainedHashDictionary<>();
+        		
+        		for (KVPair<URI, Double> page : newRanks) {
+        			URI uri = page.getKey();
+        			double oldVectorRank = page.getValue();
+        			double newVectorRank = 0.0;
+        			
+        			
+        			ISet<URI> linkedPages = graph.get(uri);
+        			for (URI linkedPage : linkedPages) {
+        				double oldEdgeRank = newRanks.get(linkedPage);
+        				double rankUpdate;
+        				
+        				if (graph.get(linkedPage).size() > 0) {
+        					rankUpdate = decay * oldVectorRank / linkedPages.size();
+        				} else {
+        					rankUpdate = decay * oldVectorRank / graph.size();
+        				}
+        				
+        				updatedRanks.put(linkedPage, rankUpdate);
+        				
+        				newVectorRank += decay * oldEdgeRank;
+        			}
+        			
+        			updatedRanks.put(uri, newVectorRank);
+        		}
+        		
+        		for (KVPair<URI, Double> page : updatedRanks) {
+        			URI key = page.getKey();
+        			double value = page.getValue();
+        			updatedRanks.put(key, value + ((1 - decay) / graph.size()));
+        		}
+        		
             // Step 2: The update step should go here
+        		
 
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
+        		
+        		int count = 0;
+        		
+        		for (KVPair<URI, Double> updatedRank : updatedRanks) {
+        			URI key = updatedRank.getKey();
+        			double value = updatedRank.getValue();
+        			if (Math.abs(value - newRanks.get(key)) < epsilon) {
+        				count++;
+        			}
+        		}
+        		
+        		newRanks = updatedRanks;
+        		
+        		if (count == graph.size()) {
+        			break;
+        		}
+        		
         }
-        throw new NotYetImplementedException();
+        return newRanks;
     }
 
     /**
@@ -94,8 +173,9 @@ public class PageRankAnalyzer {
      *               webpages given to the constructor.
      */
     public double computePageRank(URI pageUri) {
-        // Implementation note: this method should be very simple: just one line!
-        // TODO: Add working code here
-        return 1.0;
+        if (pageRanks.containsKey(pageUri)) {
+        		return pageRanks.get(pageUri);
+        }
+        throw new InvalidParameterException();
     }
 }
