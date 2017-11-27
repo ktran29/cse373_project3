@@ -132,9 +132,9 @@ public class PageRankAnalyzer {
         		    		}
         		    } else {
         		    		updateValue = decay * vectorValue / graph.size();
-        		    		for (KVPair<URI, Double> newPage : newRanks) {
-        		    			URI key = newPage.getKey();
-        		    			double value = newPage.getValue();
+        		    		for (KVPair<URI, Double> updatingPage : updatingRanks) {
+        		    			URI key = updatingPage.getKey();
+        		    			double value = updatingPage.getValue();
         		    			updatingRanks.put(key, value + updateValue);
         		    		}
         		    }
