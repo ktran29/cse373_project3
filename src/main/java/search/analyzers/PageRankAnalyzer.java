@@ -99,64 +99,72 @@ public class PageRankAnalyzer {
     	
     	
     		IDictionary<URI, Double> newRanks = new ChainedHashDictionary<>();
+    		double surfers = (1 - decay) / graph.size();
     		
-    		double surfers = ((1 - decay) / graph.size());
     		
         // Step 1: The initialize step should go here
-        for (KVPair<URI, ISet<URI>> uri : graph) {
-    			newRanks.put(uri.getKey(), (double) 1 / graph.size());
+        for (KVPair<URI, ISet<URI>> page : graph) {
+    			newRanks.put(page.getKey(), (double) 1 / graph.size());
     		}
         
         for (int i = 0; i < limit; i++) {
         	
-            IDictionary<URI, Double> updatedRanks = new ChainedHashDictionary<>();
+    			IDictionary<URI, Double> updatingRanks = new ChainedHashDictionary<>();
+    			IDictionary<URI, Double> updatedRanks = new ChainedHashDictionary<>();
+        		// Step 2: The update step should go here
         		
         		for (KVPair<URI, Double> page : newRanks) {
-        			URI uri = page.getKey();
-        			double oldVectorRank = page.getValue();
-        			double newVectorRank = 0.0;
-        			
-        			
-        			ISet<URI> linkedPages = graph.get(uri);
-        			for (URI linkedPage : linkedPages) {
-        				double oldEdgeRank = newRanks.get(linkedPage);
-        				double rankUpdate;
-        				
-        				if (graph.get(linkedPage).size() > 0) {
-        					rankUpdate = decay * oldVectorRank / linkedPages.size();
-        				} else {
-        					rankUpdate = decay * oldVectorRank / graph.size();
-        				}
-        				
-        				updatedRanks.put(linkedPage, rankUpdate + surfers);
-        				
-        				newVectorRank += decay * oldEdgeRank;
-        			}
-        			
-        			updatedRanks.put(uri, newVectorRank + surfers);
+        			URI key = page.getKey();
+        			updatingRanks.put(key, 0.0);
         		}
         		
-            // Step 2: The update step should go here
+        		for (KVPair<URI, Double> page : newRanks) {
+        			URI vectorKey = page.getKey();
+        			double vectorValue = page.getValue();
+        		    ISet<URI> linkedPages = graph.get(vectorKey);
+        		    double updateValue;
+        		    
+        		    if (!linkedPages.isEmpty()) {
+        		    		updateValue = decay * vectorValue / linkedPages.size();
+        		    		for (URI linkedPage : linkedPages) {
+        		    			double linkedValue = updatingRanks.get(linkedPage);
+        		    			updatingRanks.put(linkedPage, linkedValue + updateValue);
+        		    		}
+        		    } else {
+        		    		updateValue = decay * vectorValue / graph.size();
+        		    		for (KVPair<URI, Double> newPage : newRanks) {
+        		    			URI key = newPage.getKey();
+        		    			double value = newPage.getValue();
+        		    			updatingRanks.put(key, value + updateValue);
+        		    		}
+        		    }
+        		}
         		
-
+        		for (KVPair<URI, Double> page : updatingRanks) {
+        			URI key = page.getKey();
+        			double value = page.getValue();
+        			updatingRanks.put(key, value + surfers);
+        			updatedRanks.put(key, value + surfers);
+        		}
+        		
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
         		
         		int count = 0;
         		
-        		for (KVPair<URI, Double> updatedRank : updatedRanks) {
-        			URI key = updatedRank.getKey();
-        			double value = updatedRank.getValue();
+        		for (KVPair<URI, Double> page : updatingRanks) {
+        			URI key = page.getKey();
+        			double value = page.getValue();
         			if (Math.abs(value - newRanks.get(key)) < epsilon) {
         				count++;
         			}
         		}
         		
-        		newRanks = updatedRanks;
-        		
         		if (count == graph.size()) {
-        			break;
+        			return updatingRanks;
         		}
+        		
+        		newRanks = updatedRanks;
         		
         }
         return newRanks;
