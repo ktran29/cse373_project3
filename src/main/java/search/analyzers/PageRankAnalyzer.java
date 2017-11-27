@@ -100,6 +100,8 @@ public class PageRankAnalyzer {
     	
     		IDictionary<URI, Double> newRanks = new ChainedHashDictionary<>();
     		
+    		double surfers = ((1 - decay) / graph.size());
+    		
         // Step 1: The initialize step should go here
         for (KVPair<URI, ISet<URI>> uri : graph) {
     			newRanks.put(uri.getKey(), (double) 1 / graph.size());
@@ -126,18 +128,12 @@ public class PageRankAnalyzer {
         					rankUpdate = decay * oldVectorRank / graph.size();
         				}
         				
-        				updatedRanks.put(linkedPage, rankUpdate);
+        				updatedRanks.put(linkedPage, rankUpdate + surfers);
         				
         				newVectorRank += decay * oldEdgeRank;
         			}
         			
-        			updatedRanks.put(uri, newVectorRank);
-        			
-        			for (KVPair<URI, Double> updatedPage : updatedRanks) {
-            			URI key = updatedPage.getKey();
-            			double value = updatedPage.getValue();
-            			updatedRanks.put(key, value + ((1 - decay) / graph.size()));
-            		}
+        			updatedRanks.put(uri, newVectorRank + surfers);
         		}
         		
             // Step 2: The update step should go here
