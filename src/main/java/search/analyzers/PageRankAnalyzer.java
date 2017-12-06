@@ -6,7 +6,7 @@ import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
-import misc.exceptions.NotYetImplementedException;
+//import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
@@ -142,29 +142,24 @@ public class PageRankAnalyzer {
         		    }
         		}
         		
-        		for (KVPair<URI, Double> page : updatingRanks) {
-        			URI key = page.getKey();
-        			double value = page.getValue();
-        			updatingRanks.put(key, value + surfers);
-        			updatedRanks.put(key, value + surfers);
-        		}
-        		
-            // Step 3: the convergence step should go here.
-            // Return early if we've converged.
-        		
         		int count = 0;
         		
         		for (KVPair<URI, Double> page : updatingRanks) {
         			URI key = page.getKey();
         			double value = page.getValue();
+        			updatingRanks.put(key, value + surfers);
+        			updatedRanks.put(key, value + surfers);
         			if (Math.abs(value - newRanks.get(key)) < epsilon) {
         				count++;
         			}
         		}
         		
-        		if (count == graph.size()) {
-        			return updatingRanks;
-        		}
+            // Step 3: the convergence step should go here.
+            // Return early if we've converged.
+        			
+            if (count == graph.size()) {
+                return updatingRanks;
+            }
         		
         		newRanks = updatedRanks;
         		
